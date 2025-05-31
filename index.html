@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div id="quiz-container"></div>
+        
+    <button onclick="nextQuestion()">Next</button>
+    <button onclick="prvQuestion()">Previous</button>
+    <div id="result-container"></div>
+
+
+    <script>
+        const quizData=[
+          {  question:"Who is the first president of America", 
+            options:["George Washington", "Abraham Lincoln", "Thomas Jefferson", "John Adams"],
+            answer:"George Washington"
+          },
+          {
+            question: "What is the capital of France?",
+            options: ["Rome", "Paris", "Berlin", "Madrid"],
+            answer: "Paris"
+          },
+         
+        ]
+        let currentQuestion=0;
+        let count = 0;
+        function loadQuestion(){
+            const q = quizData[currentQuestion]
+            const container = document.getElementById('quiz-container')
+
+            let html = `<h2>${q.question}</h2>`;
+            q.options.forEach(opt =>{
+                html+=`<label>
+                    <input type="radio" name="answer" value="${opt}">${opt}
+                    </label><br>`
+            });
+            container.innerHTML = html;
+
+        }
+       
+        function prvQuestion(){
+            currentQuestion--;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            }
+        }
+        function nextQuestion() {
+            const selectedOpt = document.querySelector('input[name="answer"]:checked');
+            if (!selectedOpt) {
+                alert("Please select an option!");
+                
+            } else if (selectedOpt.value === quizData[currentQuestion].answer) {
+                
+                count ++;
+            } 
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                document.getElementById("result-container").innerHTML = `<h2> Quiz Finished</h2> Right answers :${count} `;
+
+            }
+            
+        }
+        loadQuestion();
+    </script>
+</body>
+</html>
