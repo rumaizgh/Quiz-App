@@ -6,15 +6,18 @@
     <title>Document</title>
 </head>
 <body>
-    
-    <div id="quiz-container"></div>
+    <center>
+        <div id="timer"></div>
+        <div id="quiz-container"></div>
         
     <button onclick="nextQuestion()">Next</button>
     <button onclick="prvQuestion()">Previous</button>
     <div id="result-container"></div>
-
+</center>
+    
 
     <script>
+        
         const quizData=[
           {  question:"Who is the first president of America", 
             options:["George Washington", "Abraham Lincoln", "Thomas Jefferson", "John Adams"],
@@ -29,6 +32,9 @@
         ]
         let currentQuestion=0;
         let count = 0;
+        let timeLeft = 10;
+        let timeInterval;
+
         function loadQuestion(){
             const q = quizData[currentQuestion]
             const container = document.getElementById('quiz-container')
@@ -40,32 +46,53 @@
                     </label><br>`
             });
             container.innerHTML = html;
+            startTimer();
 
         }
        
         function prvQuestion(){
+
             currentQuestion--;
-            if (currentQuestion < quizData.length) {
+            if (currentQuestion >= 0) {
                 loadQuestion();
             }
         }
         function nextQuestion() {
-            const selectedOpt = document.querySelector('input[name="answer"]:checked');
-            if (!selectedOpt) {
-                alert("Please select an option!");
-                
-            } else if (selectedOpt.value === quizData[currentQuestion].answer) {
-                
-                count ++;
-            } 
-            currentQuestion++;
-            if (currentQuestion < quizData.length) {
-                loadQuestion();
-            } else {
-                document.getElementById("result-container").innerHTML = `<h2> Quiz Finished</h2> Right answers :${count} `;
+    clearInterval(timeInterval); 
+    const selectedOpt = document.querySelector('input[name="answer"]:checked');
+    
+    // Check if user answered
+    if (selectedOpt) {
+        if (selectedOpt.value === quizData[currentQuestion].answer) {
+            count++;
+        }
+    }
 
-            }
+    currentQuestion++;
+    
+    if (currentQuestion < quizData.length) {
+        loadQuestion();
+    } else {
+        document.getElementById("quiz-container").innerHTML = "";
+        document.getElementById("timer").innerHTML = "";
+        document.getElementById("result-container").innerHTML = `<h2> Quiz Finished</h2> Right answers : ${count} `;
+    }
+}
+
             
+        
+        function startTimer(){
+            timeLeft=10;
+            document.getElementById("timer").innerHTML=`<h3>Time Left:${timeLeft}`
+            clearInterval(timeInterval);
+            timeInterval = setInterval(()=>{
+            timeLeft--;
+            document.getElementById("timer").innerHTML=`<h3>Time Left:${timeLeft}`
+            if(timeLeft==0){
+                clearInterval(timeInterval);
+                nextQuestion();
+            }
+         },1000)
         }
         loadQuestion();
     </script>
